@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -74,8 +75,12 @@ WSGI_APPLICATION = 'rideshare_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',        # your database name
+        'USER': 'admin',       # your database user
+        'PASSWORD': 'admin',   # your database password
+        'HOST': 'localhost',   # since it's running in WSL
+        'PORT': '5432',        # default PostgreSQL port
     }
 }
 
