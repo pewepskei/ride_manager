@@ -85,13 +85,17 @@ class RideViewSet(viewsets.ReadOnlyModelViewSet):
         # Distance sorting
         lat = self.request.query_params.get('lat')
         lng = self.request.query_params.get('lng')
-    
+        
         if lat and lng:
             lat = float(lat)
             lng = float(lng)
-    
+        
             queryset = queryset.annotate(
-                distance=((F('pickup_latitude') - lat) ** 2 + (F('pickup_longitude') - lng) ** 2)
+                distance=ExpressionWrapper(
+                    (F('pickup_latitude') - lat) * (F('pickup_latitude') - lat) +
+                    (F('pickup_longitude') - lng) * (F('pickup_longitude') - lng),
+                    output_field=FloatField()
+                )
             ).order_by('distance')
-    
+        
         return queryset
