@@ -14,27 +14,6 @@ from rest_framework import status
 from rides.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
-class LoginView(APIView):
-    """
-    Simple login endpoint that checks User table for role='admin'
-    """
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')  # in assessment, assume plain text for simplicity
-        try:
-            user = User.objects.get(email=email, role='admin')
-            # Here we assume passwords are plain text in the assessment DB
-            # Replace with proper hash check if available
-            if password == 'adminpass':  # or any logic for your mock DB
-                refresh = RefreshToken.for_user(user)
-                return Response({
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                })
-            else:
-                return Response({'detail':'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
-        except User.DoesNotExist:
-            return Response({'detail':'Invalid email/role'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class RidePagination(PageNumberPagination):
     page_size = 10
@@ -78,12 +57,14 @@ class RideViewSet(viewsets.ReadOnlyModelViewSet):
             'id_rider__last_name',
             'id_rider__email',
             'id_rider__role',
+            'id_rider__phone_number',
     
             'id_driver__id_user',
             'id_driver__first_name',
             'id_driver__last_name',
             'id_driver__email',
             'id_driver__role',
+            'id_driver__phone_number',
         ).prefetch_related(
             Prefetch(
                 'ride_events',
