@@ -99,9 +99,11 @@ class Command(BaseCommand):
             # Dropoff happens after trip duration
             dropoff_event_time = pickup_event_time + timedelta(minutes=trip_duration)
 
+            status = random.choice(["pickup", "en-route", "dropoff"])
+
             ride = Ride(
                 id_ride=ride_id,
-                status="dropoff",
+                status=status,
                 id_rider=rider,
                 id_driver=driver,
                 pickup_latitude=14.5 + random.random() * 0.3,
@@ -113,6 +115,7 @@ class Command(BaseCommand):
 
             rides.append(ride)
 
+            # pickup event always exists
             ride_events.append(
                 RideEvent(
                     id_ride_event=ride_event_id,
@@ -122,16 +125,32 @@ class Command(BaseCommand):
                 )
             )
             ride_event_id += 1
-
-            ride_events.append(
-                RideEvent(
-                    id_ride_event=ride_event_id,
-                    id_ride=ride,
-                    description="Status changed to dropoff",
-                    created_at=dropoff_event_time,
+            
+            # en-route event if ride progressed
+            if status in ["en-route", "dropoff"]:
+                enroute_time = pickup_event_time + timedelta(minutes=5)
+            
+                ride_events.append(
+                    RideEvent(
+                        id_ride_event=ride_event_id,
+                        id_ride=ride,
+                        description="Status changed to en-route",
+                        created_at=enroute_time,
+                    )
                 )
-            )
-            ride_event_id += 1
+                ride_event_id += 1
+            
+            # dropoff event only if completed
+            if status == "dropoff":
+                ride_events.append(
+                    RideEvent(
+                        id_ride_event=ride_event_id,
+                        id_ride=ride,
+                        description="Status changed to dropoff",
+                        created_at=dropoff_event_time,
+                    )
+                )
+                ride_event_id += 1
 
             ride_id += 1
 
