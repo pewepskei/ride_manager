@@ -1,0 +1,8 @@
+*.pyc
+*.class
+*~
+__pycache__
+.DS_Store
+
+data.csv
+db.sqlite3
