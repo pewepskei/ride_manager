@@ -8,4 +8,5 @@ router.register(r'rides', RideViewSet, basename='ride')
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('silk/', include('silk.urls', namespace='silk')),
 ]
