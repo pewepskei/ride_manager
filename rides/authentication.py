@@ -13,7 +13,10 @@ class SimpleHeaderAuthentication(BaseAuthentication):
         email = request.headers.get('X-User-Email')
         role = request.headers.get('X-User-Role')
         if not email or not role:
-            return None  # DRF will return 401 automatically
+            return None  # 401
+
+        if role != "admin":
+            raise exceptions.AuthenticationFailed("You don't have permission to acces this")
 
         try:
             user = User.objects.get(email=email, role=role)

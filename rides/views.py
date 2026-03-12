@@ -14,7 +14,6 @@ from rest_framework import status
 from rides.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
 class RidePagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
